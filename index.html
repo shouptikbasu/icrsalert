@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OviSafe Predictor Application</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            width: 400px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            text-align: center;
+        }
+        .progress {
+            width: 100%;
+            background-color: #f3f3f3;
+            margin-top: 20px;
+        }
+        .low { background-color: green; }
+        .moderate { background-color: yellow; }
+        .high { background-color: orange; }
+        .very-high { background-color: red; }
+        .progress-bar {
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+    </style>
+    <script>
+        // Function to predict complication based on inputs
+        function predictComplication() {
+            // Retrieve input values
+            var age = parseInt(document.getElementById('age').value);
+            var surgeryDuration = document.getElementById('surgeryDuration').value;
+            var crpValue = parseFloat(document.getElementById('crp').value);
+            
+            // Define thresholds for risk levels
+            var ageThreshold = 60;
+            var crpThreshold = 143;
+            
+            // Initialize complication risk level
+            var complicationRisk = "Low";
+            
+            // Check if any of the two among age, duration of surgery, and CRP is high
+            if (age > ageThreshold || surgeryDuration === ">6 hours" || crpValue > crpThreshold) {
+                complicationRisk = "Moderate";
+            }
+            
+            // Check if CRP alone is greater than threshold
+            if (crpValue > crpThreshold) {
+                complicationRisk = "Very High";
+            }
+            
+            // Check if all three are present
+            if (age > ageThreshold && surgeryDuration === ">6 hours" && crpValue > crpThreshold) {
+                complicationRisk = "High";
+            }
+            
+            // Display the complication risk level
+            document.getElementById('riskLevel').innerHTML = "Complication Risk Level: " + complicationRisk;
+            
+            // Update the percentage bar color based on risk level
+            var progressBar = document.getElementById('progressBar');
+            progressBar.classList.remove('low', 'moderate', 'high', 'very-high');
+            progressBar.classList.add(complicationRisk.toLowerCase().replace(' ', '-'));
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>iCRS-Alert Applicationn</h2>
+        <p>This calculator predicts the risk of developing post-operative complications in Carcinoma Ovary patients after Interval Cytoreductive Surgery and HIPEC</p>
+        <label for="age">Age:</label>
+        <input type="number" id="age" min="0"><br><br>
+        <label for="surgeryDuration">Duration of Surgery:</label>
+        <select id="surgeryDuration">
+            <option value="<6 hours">&lt; 6 hours</option>
+            <option value=">6 hours">&gt; 6 hours</option>
+        </select><br><br>
+        <label for="crp">CRP Value on Post-Operative day 3 (mg/L):</label>
+        <input type="number" id="crp" step="0.01" min="0"><br><br>
+        <button onclick="predictComplication()">Predict Complication</button><br><br>
+        <div id="riskLevel"></div>
+        <div class="progress">
+            <div id="progressBar" class="progress-bar">Risk Level</div>
+        </div>
+        <br><br>
+        <p>Developed by Dr. Shouptik Basu &#169;</p>
+    </div>
+</body>
+</html>
